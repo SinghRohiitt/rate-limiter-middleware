@@ -1,0 +1,20 @@
+meta {
+  name: limit-request
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:5000/api/test
+  body: none
+  auth: inherit
+}
+
+headers {
+  x-user-id: 	540d14d2-93df-451c-9f41-72ec7358519c
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

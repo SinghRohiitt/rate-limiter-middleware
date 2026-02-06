@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "rate-limiters",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
