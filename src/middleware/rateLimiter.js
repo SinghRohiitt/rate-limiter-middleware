@@ -1,8 +1,19 @@
 import { v4 as uuidv4 } from "uuid";
 import { config } from "../config/env.js";
 
-// In-memory store
 const rateLimitStore = new Map();
+const windowMs = config.rateWindowSec * 1000;
+
+// 🧹 AUTO CLEANUP JOB
+setInterval(() => {
+  const now = Date.now();
+
+  for (const [userId, userData] of rateLimitStore.entries()) {
+    if (now - userData.startTime > windowMs) {
+      rateLimitStore.delete(userId);
+    }
+  }
+}, windowMs);
 
 const rateLimiter = (req, res, next) => {
   // 1️⃣ Identify user
@@ -23,7 +34,12 @@ const rateLimiter = (req, res, next) => {
       startTime: currentTime,
     });
 
-    setRateLimitHeaders(res, config.rateLimit, config.rateLimit - 1, config.rateWindowSec);
+    setRateLimitHeaders(
+      res,
+      config.rateLimit,
+      config.rateLimit - 1,
+      config.rateWindowSec,
+    );
     return next();
   }
 
@@ -37,7 +53,12 @@ const rateLimiter = (req, res, next) => {
       startTime: currentTime,
     });
 
-    setRateLimitHeaders(res, config.rateLimit, config.rateLimit - 1, config.rateWindowSec);
+    setRateLimitHeaders(
+      res,
+      config.rateLimit,
+      config.rateLimit - 1,
+      config.rateWindowSec,
+    );
     return next();
   }
 
